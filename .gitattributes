@@ -1,0 +1,15 @@
+# Normaliza fim de linha: o repositório guarda tudo em LF, independente do
+# sistema de quem commitou. Evita diffs falsos entre Windows e Linux/macOS.
+* text=auto eol=lf
+
+# Arquivos que precisam de CRLF no Windows para funcionar.
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+*.ps1  text eol=crlf
+
+# Binários: nunca converter.
+*.png    binary
+*.jpg    binary
+*.webp   binary
+*.parquet binary
+*.db     binary

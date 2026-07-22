@@ -1,0 +1,61 @@
+# Países-alvo do estudo.
+#
+# Critério de seleção: cobrir todos os continentes e incluir tanto potências
+# cinematográficas consolidadas quanto países com produção relevante e baixa
+# projeção externa — o contraste é justamente o que o índice quer medir.
+#
+# `iso` segue ISO 3166-1 alfa-2 e é a chave de junção com TMDB, Wikidata,
+# World Bank e UNESCO. Alterar aqui muda o escopo de toda a ingestão.
+
+# --- América do Norte ---------------------------------------------------
+- { iso: US, nome: Estados Unidos, regiao: América do Norte }
+- { iso: CA, nome: Canadá,         regiao: América do Norte }
+- { iso: MX, nome: México,         regiao: América do Norte }
+
+# --- América Latina -----------------------------------------------------
+- { iso: BR, nome: Brasil,    regiao: América do Sul }
+- { iso: AR, nome: Argentina, regiao: América do Sul }
+- { iso: CL, nome: Chile,     regiao: América do Sul }
+- { iso: CO, nome: Colômbia,  regiao: América do Sul }
+
+# --- Europa Ocidental ---------------------------------------------------
+- { iso: FR, nome: França,          regiao: Europa Ocidental }
+- { iso: GB, nome: Reino Unido,     regiao: Europa Ocidental }
+- { iso: DE, nome: Alemanha,        regiao: Europa Ocidental }
+- { iso: IT, nome: Itália,          regiao: Europa Ocidental }
+- { iso: ES, nome: Espanha,         regiao: Europa Ocidental }
+- { iso: PT, nome: Portugal,        regiao: Europa Ocidental }
+- { iso: SE, nome: Suécia,          regiao: Europa Setentrional }
+- { iso: DK, nome: Dinamarca,       regiao: Europa Setentrional }
+
+# --- Europa Oriental ----------------------------------------------------
+- { iso: PL, nome: Polônia, regiao: Europa Oriental }
+- { iso: RU, nome: Rússia,  regiao: Europa Oriental }
+
+# --- Ásia Oriental ------------------------------------------------------
+- { iso: KR, nome: Coreia do Sul, regiao: Ásia Oriental }
+- { iso: JP, nome: Japão,         regiao: Ásia Oriental }
+- { iso: CN, nome: China,         regiao: Ásia Oriental }
+- { iso: HK, nome: Hong Kong,     regiao: Ásia Oriental }
+
+# --- Ásia Meridional e Sudeste ------------------------------------------
+- { iso: IN, nome: Índia,      regiao: Ásia Meridional }
+- { iso: TH, nome: Tailândia,  regiao: Sudeste Asiático }
+- { iso: ID, nome: Indonésia,  regiao: Sudeste Asiático }
+- { iso: PH, nome: Filipinas,  regiao: Sudeste Asiático }
+
+# --- Oriente Médio ------------------------------------------------------
+- { iso: TR, nome: Turquia, regiao: Oriente Médio }
+- { iso: IR, nome: Irã,     regiao: Oriente Médio }
+- { iso: IL, nome: Israel,  regiao: Oriente Médio }
+
+# --- África -------------------------------------------------------------
+- { iso: NG, nome: Nigéria,      regiao: África Subsaariana }
+- { iso: ZA, nome: África do Sul, regiao: África Subsaariana }
+- { iso: KE, nome: Quênia,       regiao: África Subsaariana }
+- { iso: EG, nome: Egito,        regiao: Norte da África }
+- { iso: MA, nome: Marrocos,     regiao: Norte da África }
+
+# --- Oceania ------------------------------------------------------------
+- { iso: AU, nome: Austrália,    regiao: Oceania }
+- { iso: NZ, nome: Nova Zelândia, regiao: Oceania }
