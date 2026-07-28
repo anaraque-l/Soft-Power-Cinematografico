@@ -28,5 +28,8 @@ jobs:
       - name: Formatação (ruff)
         run: ruff format --check .
 
+      # `-m "not pendente"` exclui os exercícios ainda não implementados
+      # (convenção `[VOCÊ]` do plano). Eles rodam localmente, como lista de
+      # tarefas; o CI mede só o que já se propõe a funcionar.
       - name: Testes
-        run: pytest --cov=ingestion --cov-report=term-missing
+        run: pytest -m "not pendente" --cov=ingestion --cov-report=term-missing

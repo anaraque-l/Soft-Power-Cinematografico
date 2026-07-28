@@ -1,0 +1,68 @@
+name: Ingestão TMDB
+
+# Snapshot semanal. O histórico público de execuções deste workflow é parte do
+# portfólio: prova que o pipeline roda de verdade, e não só na máquina de quem
+# escreveu. Cada rodada acrescenta uma partição datada — nunca substitui.
+
+on:
+  schedule:
+    # Segundas, 03:17 UTC. Minuto quebrado de propósito: os horários redondos
+    # são os mais concorridos no Actions e os que mais atrasam.
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+    inputs:
+      anos:
+        description: "Ano, intervalo ou lista (ex.: 2023 | 2019-2023)"
+        required: true
+        default: "2023"
+      paises:
+        description: "ISOs separados por vírgula (vazio = todos)"
+        required: false
+        default: ""
+      max_paginas:
+        description: "Páginas de 20 filmes por país/ano"
+        required: false
+        default: "3"
+
+concurrency:
+  # Duas coletas simultâneas gerariam partições duplicadas do mesmo dia.
+  group: ingestao-tmdb
+  cancel-in-progress: false
+
+jobs:
+  coletar:
+    name: Coletar snapshot do TMDB
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Instalar dependências
+        run: pip install -e .
+
+      - name: Coletar
+        env:
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          LOG_LEVEL: INFO
+        run: |
+          python -m ingestion.pipelines.tmdb_coleta \
+            --anos "${{ inputs.anos || format('{0}', 2023) }}" \
+            ${{ inputs.paises && format('--paises {0}', inputs.paises) || '' }} \
+            --max-paginas "${{ inputs.max_paginas || 3 }}"
+
+      # Enquanto o Postgres gerenciado não está provisionado (ADR 0003), o
+      # artefato é a única persistência entre execuções. Vira carga direta no
+      # banco na Fase 2, quando o dbt entrar.
+      - name: Publicar snapshot como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: snapshot-${{ github.run_id }}
+          path: data/raw/
+          retention-days: 90
+          if-no-files-found: error
