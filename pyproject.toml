@@ -28,6 +28,7 @@ dev = [
     "ruff>=0.5",
     "pytest>=8.2",
     "pytest-cov>=5.0",
+    "pytest-asyncio>=0.23",  # o cliente do TMDB é async; os testes também
     "respx>=0.21",           # mock de HTTP para testar clientes de API sem rede
 ]
 
@@ -50,8 +51,21 @@ select = [
     "SIM",     # flake8-simplify
     "RUF",     # regras do próprio ruff
 ]
+ignore = [
+    # Documentação e mensagens são em português, com pontuação tipográfica
+    # (×, —, aspas curvas). "Caractere ambíguo" aqui é falso positivo em série.
+    "RUF001", "RUF002", "RUF003",
+]
 
 # --- Pytest -------------------------------------------------------------
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-v --strict-markers"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+markers = [
+    # Testes escritos antes da implementação (convenção `[VOCÊ]` do PLANO):
+    # rodam localmente como lista de tarefas, e o CI os desmarca com
+    # `-m "not pendente"` para não pintar de vermelho trabalho não iniciado.
+    "pendente: exercício ainda não implementado",
+]

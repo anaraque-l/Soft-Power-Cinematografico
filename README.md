@@ -10,7 +10,7 @@ Este projeto constrói um índice autoral — o **ISPC (Índice de Soft Power Ci
 para responder quais países convertem produção cinematográfica em influência cultural
 global, e quais produzem muito sem exportar quase nada.
 
-> 🚧 **Status: em reconstrução ativa (Fase 0 de 7).**
+> 🚧 **Status: em reconstrução ativa (Fase 1 de 7).**
 > O protótipo original está preservado na tag [`v0-streamlit`](../../tree/v0-streamlit).
 > As decisões de arquitetura estão registradas nos [ADRs](docs/adr/).
 
@@ -92,14 +92,52 @@ pip install -e ".[dev]"
 pytest
 ```
 
-Para rodar o pipeline (a partir da Fase 1), copie `.env.example` para `.env` e preencha
-a `TMDB_API_KEY` — a chave é gratuita e sai em minutos em
-[themoviedb.org/settings/api](https://www.themoviedb.org/settings/api).
-
 ```bash
 ruff check .        # lint
 ruff format .       # formatação
 pytest --cov=ingestion
+```
+
+### Rodar a ingestão
+
+Copie `.env.example` para `.env` e preencha a `TMDB_API_KEY` — a chave é gratuita e sai
+em minutos em [themoviedb.org/settings/api](https://www.themoviedb.org/settings/api).
+Tanto a chave v3 quanto o *read access token* v4 funcionam.
+
+```bash
+# corte vertical: 5 países, 1 ano, top 20 filmes de cada
+python -m ingestion.pipelines.tmdb_coleta \
+    --anos 2023 --paises BR,KR,FR,US,NG --max-paginas 1
+
+python -m ingestion.pipelines.tmdb_coleta --anos 2019-2023   # escopo completo
+python -m ingestion.pipelines.tmdb_coleta --anos 2023 --dry-run
+```
+
+Cada execução grava uma partição nova em `data/raw/<dataset>/ingested_date=AAAA-MM-DD/`
+— **nunca** sobrescreve a anterior. É o que torna o ISPC uma série temporal, e é
+exatamente o que o v0 destruía a cada rodada com `if_exists="replace"`.
+
+Três datasets saem daí, cada um no seu grão:
+
+| dataset | uma linha é... |
+|---|---|
+| `tmdb_movies` | um filme, num país-alvo, num ano |
+| `tmdb_release_dates` | um evento de lançamento (filme × país × tipo) |
+| `tmdb_watch_providers` | uma disponibilidade (filme × país × provedor) |
+
+O racional do formato e do particionamento está no
+[ADR 0004](docs/adr/0004-camada-bruta-em-parquet-particionado.md).
+
+### Testes marcados como `pendente`
+
+Parte do código é desenvolvida com os testes escritos antes da implementação. Esses
+testes ficam marcados como `pendente` — rodam localmente (são a lista de tarefas) e o
+CI os desmarca com `-m "not pendente"`, para não pintar de vermelho o que ainda não
+começou.
+
+```bash
+pytest                      # tudo, inclusive o que falta implementar
+pytest -m "not pendente"    # o que o CI mede
 ```
 
 ## Escopo
@@ -114,7 +152,7 @@ grupos é justamente o que o índice quer medir. A lista está em
 | Fase | Entrega | Status |
 |---|---|---|
 | 0 | Fundação: estrutura, tipagem, testes, CI | ✅ concluída |
-| 1 | Ingestão preservando o grão de filme, com histórico datado | ⏳ |
+| 1 | Ingestão preservando o grão de filme, com histórico datado | 🔨 em andamento |
 | 2 | Modelagem dbt: bronze → silver → gold, com testes de contrato | ⏳ |
 | 3 | **O índice**: metodologia, sensibilidade, validação externa | ⏳ |
 | 4 | Enriquecimento: prêmios (Wikidata), UNESCO, análise cromática | ⏳ |
