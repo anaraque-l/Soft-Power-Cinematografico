@@ -1,1 +1,50 @@
+# --- Segredos -----------------------------------------------------------
 .env
+.env.local
+*.pem
+*.key
+
+# --- Dados: artefatos, nunca código -------------------------------------
+# Bancos e arquivos de dados são SAÍDA do pipeline. Nunca versionar.
+data/
+*.db
+*.sqlite
+*.sqlite3
+*.parquet
+*.duckdb
+
+# --- Python -------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- dbt ----------------------------------------------------------------
+transform/target/
+transform/dbt_packages/
+transform/logs/
+
+# --- Node / Next.js -----------------------------------------------------
+node_modules/
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+
+# --- Documentos de trabalho ---------------------------------------------
+# Plano de execução: documento interno, fora do repositório público.
+docs/PLANO.md
+
+# --- Editores e SO ------------------------------------------------------
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
